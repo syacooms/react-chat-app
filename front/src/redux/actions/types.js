@@ -1,3 +1,4 @@
 //USER TYPES
-export const SET_USER = 'set_users';
-export const CLEAR_USER = 'clear_users';
+export const SET_USER = 'SET_USER';
+export const CLEAR_USER = 'CLEAR_USER';
+export const SET_PHOTO_URL = 'SET_PHOTO_URL';
