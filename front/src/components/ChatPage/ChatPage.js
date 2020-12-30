@@ -8,7 +8,7 @@ function ChatPage() {
       <div style={{ width: '300px' }}>
         <SidePanel />
       </div>
-      <div style={{ width: '300px' }}>
+      <div style={{ width: '1200px' }}>
         <MainPanel />
       </div>
     </div>
