@@ -14,6 +14,9 @@ function MessageForm() {
   const [errors, setErrors] = useState([]);
   const [loading, setLoading] = useState(false);
   const [percentage, setPercentage] = useState(0);
+  const isPrivateChatRoom = useSelector(
+    (state) => state.chatRoom.isPrivateChatRoom,
+  );
   const messagesRef = firebase.database().ref('messages');
   const storageRef = firebase.storage().ref();
   const inputOpenImageRef = useRef();
@@ -66,10 +69,18 @@ function MessageForm() {
     inputOpenImageRef.current.click();
   };
 
+  const getPath = () => {
+    if (isPrivateChatRoom) {
+      return `/message/private/${chatRoom.id}`;
+    } else {
+      return `/message/public`;
+    }
+  };
+
   const handleUploadImage = (event) => {
     const file = event.target.files[0];
     //console.log('file', file);
-    const filePath = `/message/public/${file.name}`;
+    const filePath = `${getPath()}/${file.name}`;
     const metadata = { contentType: mime.lookup(file.name) };
     setLoading(true);
 
