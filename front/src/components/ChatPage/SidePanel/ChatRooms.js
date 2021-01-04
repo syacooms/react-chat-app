@@ -164,8 +164,8 @@ export class ChatRooms extends Component {
 
   changeChatRoom = (room) => {
     this.props.dispatch(setCurrentChatRoom(room));
-    this.setState({ activeChatRoomId: room.id });
     this.props.dispatch(setPrivateChatRoom(false));
+    this.setState({ activeChatRoomId: room.id });
     this.clearNotifications();
   };
 
@@ -174,7 +174,7 @@ export class ChatRooms extends Component {
       (notification) => notification.id === this.props.chatRoom.id,
     );
 
-    if (index !== -1) {
+    if (index !== 1) {
       let updatedNotifications = [...this.state.notifications];
       updatedNotifications[index].lastKnownTotal = this.state.notifications[
         index
