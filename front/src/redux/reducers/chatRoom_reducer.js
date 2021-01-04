@@ -1,4 +1,8 @@
-import { SET_CURRENT_CHAT_ROOM, SET_PRIVATE_CHAT_ROOM } from '../actions/types';
+import {
+  SET_CURRENT_CHAT_ROOM,
+  SET_PRIVATE_CHAT_ROOM,
+  SET_USER_POSTS,
+} from '../actions/types';
 
 // 로그인 시작시 isLoading true
 // 로그인 완료시 false
@@ -19,7 +23,11 @@ export default function (state = initialChatRoomState, action) {
         ...state,
         isPrivateChatRoom: action.payload,
       };
-
+    case SET_USER_POSTS:
+      return {
+        ...state,
+        userPosts: action.payload,
+      };
     default:
       return state;
   }
