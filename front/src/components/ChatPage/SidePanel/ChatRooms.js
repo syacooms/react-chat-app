@@ -226,7 +226,7 @@ export class ChatRooms extends Component {
           }}
         >
           <FaRegSmileWink style={{ marginRight: 3 }} />
-          CHAT ROOMS ({ChatRooms.length})
+          CHAT ROOMS
           <FaPlus
             onClick={this.handleShow}
             style={{

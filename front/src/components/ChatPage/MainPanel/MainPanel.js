@@ -5,8 +5,10 @@ import MessageForm from './MessageForm';
 import { connect } from 'react-redux';
 import firebase from '../../../firebase';
 import { setUserPosts } from '../../../redux/actions/chatRoom_action';
-
+import Skeleton from '../../../commons/components/Skeleton';
 export class MainPanel extends Component {
+  messageEndRef = React.createRef();
+
   state = {
     messages: [],
     messagesRef: firebase.database().ref('messages'),
@@ -16,6 +18,7 @@ export class MainPanel extends Component {
     searchLoading: false,
     typingRef: firebase.database().ref('typing'),
     typingUsers: [],
+    listenerLists: [],
   };
 
   componentDidMount() {
@@ -26,6 +29,23 @@ export class MainPanel extends Component {
       this.addTypingListeners(chatRoom.id);
     }
   }
+
+  componentDidUpdate() {
+    if (this.messageEndRef) {
+      this.messageEndRef.scrollIntoView({ behavior: 'smooth' });
+    }
+  }
+
+  componentWillUnmount() {
+    this.state.messagesRef.off();
+    this.removeListeners(this.state.listenerLists);
+  }
+
+  removeListeners = (listeners) => {
+    listeners.forEach((listener) => {
+      listener.ref.child(listener.id).off(listener.event);
+    });
+  };
 
   addTypingListeners = (chatRoomId) => {
     // typing이 새로 들어올 때
@@ -39,6 +59,9 @@ export class MainPanel extends Component {
         this.setState({ typingUsers });
       }
     });
+
+    //listenersList state에 등록된 리스너 넣어주기
+    this.addToListenerLists(chatRoomId, this.state.typingRef, 'child_added');
 
     // typing을 지워줄 때
     this.state.typingRef
@@ -54,6 +77,24 @@ export class MainPanel extends Component {
           this.setState({ typingUsers });
         }
       });
+
+    //listenersList state에 등록된 리스너 넣어주기
+    this.addToListenerLists(chatRoomId, this.state.typingRef, 'child_removed');
+  };
+
+  addToListenerLists = (id, ref, event) => {
+    // 이미 등록된 리스너인지 확인
+    const index = this.state.listenerLists.findIndex((listener) => {
+      return (
+        listener.id === id && listener.ref === ref && listener.evnet === event
+      );
+    });
+    if (index === -1) {
+      const newListener = { id, ref, event };
+      this.setState({
+        listenerLists: this.state.listenerLists.concat(newListener),
+      });
+    }
   };
 
   handleSearchMessages = () => {
@@ -123,8 +164,23 @@ export class MainPanel extends Component {
       <span>{user.name}님이 채팅을 입력하고 있습니다...</span>
     ));
 
+  renderMessageSkeleton = (loading) =>
+    loading && (
+      <>
+        {[...Array(10)].map((v, i) => (
+          <Skeleton key={i} />
+        ))}
+      </>
+    );
+
   render() {
-    const { messages, searchTerm, searchResults, typingUsers } = this.state;
+    const {
+      messages,
+      searchTerm,
+      searchResults,
+      typingUsers,
+      messagesLoading,
+    } = this.state;
     return (
       <div style={{ padding: '2rem 2rem 0 2rem' }}>
         <MessageHeader handleSearchChange={this.handleSearchChange} />
@@ -140,10 +196,13 @@ export class MainPanel extends Component {
             overflowY: 'auto',
           }}
         >
+          {this.renderMessageSkeleton(messagesLoading)}
+
           {searchTerm
             ? this.renderMessages(searchResults)
             : this.renderMessages(messages)}
           {this.renderTypingUsers(typingUsers)}
+          <div ref={(node) => (this.messageEndRef = node)} />
         </div>
 
         <MessageForm />

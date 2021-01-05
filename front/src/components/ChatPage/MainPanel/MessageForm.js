@@ -125,7 +125,13 @@ function MessageForm() {
     }
   };
 
-  const handleKeyDown = () => {
+  const handleKeyDown = (event) => {
+    console.log(event.keyCode);
+
+    if (event.ctrlKey && event.keyCode === 13) {
+      handleSubmit();
+    }
+
     if (content) {
       typingRef.child(chatRoom.id).child(user.uid).set(user.displayName);
     } else {
@@ -137,7 +143,7 @@ function MessageForm() {
     <div>
       <Form onSubmit={handleSubmit}>
         <Form.Group controlId="exampleForm.ControlTextarea1">
-          <Form.Label>Example textarea</Form.Label>
+          <Form.Label>Send Message (ctrl + Enter)</Form.Label>
           <Form.Control
             onKeyDown={handleKeyDown}
             value={content}
