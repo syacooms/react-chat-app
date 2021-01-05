@@ -1,6 +1,10 @@
-# react-chat-app
+# 🔊react-chat-app
 
-✨🎫🎠
+### link : **https://react-chat-app-61e15.web.app**
 
-- _react_
-- _firebase_ ~~(처음)~~
+# Stack
+
+- React
+- Firebase
+
+> firebase를 이용한 실시간 database 사용 해보기.
